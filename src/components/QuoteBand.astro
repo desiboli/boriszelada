@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import backdrop from '../assets/photos/brudpar-kyssen.jpg';
+---
+
+<section class="relative overflow-hidden bg-plum py-28 sm:py-40">
+  <Image
+    src={backdrop}
+    alt=""
+    aria-hidden="true"
+    widths={[900, 1400, 2000]}
+    sizes="100vw"
+    loading="lazy"
+    class="absolute inset-0 h-full w-full object-cover object-[50%_30%] opacity-30"
+  />
+  <div class="absolute inset-0 bg-gradient-to-b from-plum/80 via-plum/60 to-plum/90"></div>
+
+  <div class="relative mx-auto max-w-[1100px] px-5 text-center sm:px-8">
+    <p class="script reveal text-3xl text-gold sm:text-4xl">Förtroendet</p>
+
+    <blockquote class="reveal mt-6">
+      <p class="text-display text-cream">
+        Bilder som brudparet kommer att titta tillbaka på i många år
+      </p>
+    </blockquote>
+
+    <div class="reveal mx-auto mt-12 grid max-w-4xl gap-8 text-left sm:grid-cols-2">
+      <p class="text-cream/75">
+        Dessa bilder är något som brudparet en lång tid framöver kommer att titta tillbaka
+        på för att minnas deras alldeles egna speciella dag — och det gör mig otroligt glad
+        att många väljer att lägga det förtroendet till mig.
+      </p>
+      <p class="text-cream/75">
+        Jag lägger stor vikt på att prata med mina kunder innan det är dags, för att gå
+        igenom vad paret själva tänkt sig och för att bilderna ska bli så bra som möjligt.
+      </p>
+    </div>
+  </div>
+</section>

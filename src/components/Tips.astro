@@ -1,0 +1,50 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { tips } from '../data/tips';
+---
+
+<section id="tips" class="bg-cream py-24 sm:py-32">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8">
+    <SectionHeading
+      eyebrow="Behöver ni lite tips?"
+      script="Gratis råd"
+      title="Inför er stora dag"
+    />
+
+    <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:gap-6">
+      {
+        tips.map((tip, index) => (
+          <li class="reveal">
+            <article
+              class:list={[
+                'group flex h-full flex-col rounded-[1.5rem] bg-shell p-8 ring-1 ring-ink/8 transition-transform duration-500 sm:p-10',
+                tip.href && 'hover:-translate-y-1.5',
+              ]}
+            >
+              <span class="eyebrow text-ink/35">{String(index + 1).padStart(2, '0')}</span>
+              <h3 class="mt-4 text-title text-ink">
+                {tip.href ? (
+                  <a href={tip.href} class="transition-colors hover:text-clay">
+                    {tip.title}
+                  </a>
+                ) : (
+                  tip.title
+                )}
+              </h3>
+              <p class="mt-4 flex-1 text-ink/70">{tip.teaser}</p>
+              {tip.href && (
+                <a
+                  href={tip.href}
+                  class="eyebrow mt-8 inline-flex items-center gap-2 text-clay transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  Läs mer
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
+              )}
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

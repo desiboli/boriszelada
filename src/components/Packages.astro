@@ -1,0 +1,100 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { packages } from '../data/packages';
+---
+
+<section id="paket" class="bg-cream py-24 sm:py-32">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8">
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <SectionHeading
+        eyebrow="Men vad kostar det då?"
+        script="Rakt på sak"
+        title="Mina bröllopspaket"
+      />
+      <p class="reveal max-w-md text-ink/70 lg:text-right">
+        Vet ni inte vilket paket som passar? Berätta om er dag så guidar jag er till det
+        upplägg som passar er bäst.
+      </p>
+    </div>
+
+    <div class="mt-16 grid gap-6 lg:grid-cols-3">
+      {
+        packages.map((pkg) => (
+          <article
+            class:list={[
+              'reveal group relative flex flex-col rounded-[1.75rem] p-8 transition-transform duration-500 hover:-translate-y-1.5 sm:p-10',
+              pkg.featured
+                ? 'bg-plum text-cream ring-1 ring-plum'
+                : 'bg-shell text-ink ring-1 ring-ink/10',
+            ]}
+          >
+            {pkg.featured && (
+              <span class="script absolute -top-4 right-8 -rotate-2 rounded-full bg-gold px-4 py-1.5 text-xl text-plum">
+                Populärast
+              </span>
+            )}
+
+            <div class="flex items-baseline justify-between gap-4">
+              <span
+                class:list={[
+                  'eyebrow',
+                  pkg.featured ? 'text-cream/50' : 'text-ink/40',
+                ]}
+              >
+                {pkg.number}
+              </span>
+            </div>
+
+            <h3 class="mt-5 text-title">{pkg.name}</h3>
+
+            <p
+              class:list={[
+                'mt-3 font-display text-2xl',
+                pkg.featured ? 'text-gold' : 'text-clay',
+              ]}
+            >
+              {pkg.price}
+            </p>
+
+            <ul
+              class:list={[
+                'mt-8 flex flex-1 flex-col gap-3 border-t pt-8 text-[0.95rem]',
+                pkg.featured ? 'border-cream/15' : 'border-ink/10',
+              ]}
+            >
+              {pkg.includes.map((item) => (
+                <li class="flex gap-3">
+                  <span
+                    class:list={[
+                      'mt-2 h-1.5 w-1.5 shrink-0 rounded-full',
+                      pkg.featured ? 'bg-gold' : 'bg-clay',
+                    ]}
+                    aria-hidden="true"
+                  />
+                  <span class={pkg.featured ? 'text-cream/80' : 'text-ink/75'}>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#kontakt"
+              class:list={[
+                'mt-10 rounded-full px-6 py-3 text-center transition-colors duration-300',
+                pkg.featured
+                  ? 'bg-cream text-plum hover:bg-gold'
+                  : 'bg-ink text-cream hover:bg-clay',
+              ]}
+            >
+              Fråga om {pkg.name.toLowerCase()}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="reveal mt-10 text-sm text-ink/55">
+      Alla paket inkluderar genomgång före bröllopet och professionell efterredigering.
+      Res­kostnad utanför närområdet tillkommer.
+    </p>
+  </div>
+</section>

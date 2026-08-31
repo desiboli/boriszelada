@@ -1,0 +1,36 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { testimonials } from '../data/testimonials';
+---
+
+<section id="omdomen" class="bg-shell py-24 sm:py-32">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8">
+    <SectionHeading
+      eyebrow="Litar ni inte på mig?"
+      script="Ta deras ord för det"
+      title="Lyssna på brudparen"
+    />
+
+    <div class="mt-14 gap-5 md:columns-2 lg:columns-3 lg:gap-6">
+      {
+        testimonials.map((testimonial) => (
+          <figure
+            class="reveal mb-5 break-inside-avoid rounded-[1.5rem] bg-cream p-8 ring-1 ring-ink/8 lg:mb-6"
+          >
+            <span
+              class="block font-display text-5xl leading-none text-clay/40"
+              aria-hidden="true"
+            >
+              &ldquo;
+            </span>
+            <blockquote class="mt-2 text-ink/80">{testimonial.quote}</blockquote>
+            <figcaption class="mt-6 border-t border-ink/10 pt-5">
+              <span class="eyebrow block text-ink">{testimonial.couple}</span>
+              <span class="mt-1 block text-sm text-ink/55">{testimonial.location}</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

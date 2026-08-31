@@ -1,0 +1,165 @@
+---
+import { Image, getImage } from 'astro:assets';
+import SectionHeading from './SectionHeading.astro';
+import { gallery } from '../data/gallery';
+import { site } from '../data/site';
+
+// Pre-generate a large variant of every photo for the lightbox so opening one
+// doesn't download the original multi-megabyte file.
+const fullSize = await Promise.all(
+  gallery.map((photo) => getImage({ src: photo.src, width: 1800, format: 'webp' })),
+);
+---
+
+<section id="galleri" class="bg-cream py-24 sm:py-32">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8">
+    <SectionHeading
+      eyebrow="Människor + kärlek"
+      script="Mitt favoritjobb"
+      title="Ögonblick jag har fått fånga"
+    />
+
+    <p class="reveal mt-6 max-w-2xl text-lead text-ink/70">
+      Bröllopsporträtt har och kommer alltid att vara min absoluta favorit att
+      fotografera. Här är ett urval från de senaste åren.
+    </p>
+
+    <div class="mt-14 gap-4 [column-fill:balance] sm:columns-2 lg:columns-3 lg:gap-6">
+      {
+        gallery.map((photo, index) => (
+          <figure class="reveal mb-4 break-inside-avoid lg:mb-6">
+            <button
+              type="button"
+              class="group block w-full cursor-zoom-in overflow-hidden rounded-2xl bg-shell"
+              data-lightbox
+              data-index={index}
+              data-full={fullSize[index].src}
+              data-alt={photo.alt}
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                widths={[420, 700, 1000]}
+                sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw"
+                class="w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+              />
+              <span class="sr-only">Visa bilden i större format</span>
+            </button>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="reveal mt-12 flex flex-wrap items-center gap-x-6 gap-y-3">
+      <a
+        href={site.instagramUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded-full border border-ink/20 px-7 py-3.5 text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-cream"
+      >
+        Se fler bilder på Instagram
+      </a>
+      <span class="script text-2xl text-clay">{site.instagramHandle}</span>
+    </div>
+  </div>
+</section>
+
+<dialog
+  id="lightbox"
+  class="max-h-none max-w-none bg-transparent backdrop:bg-plum/92 backdrop:backdrop-blur-sm"
+  aria-label="Bildvisning"
+>
+  <div class="fixed inset-0 flex flex-col">
+    <div class="flex items-center justify-between px-4 py-4 sm:px-8">
+      <p class="eyebrow text-cream/60" id="lightbox-counter"></p>
+      <button
+        type="button"
+        id="lightbox-close"
+        class="rounded-full border border-cream/30 px-5 py-2 text-cream transition-colors hover:bg-cream hover:text-ink"
+      >
+        Stäng
+      </button>
+    </div>
+
+    <div class="flex min-h-0 flex-1 items-center justify-center px-4 pb-4 sm:px-8">
+      <img id="lightbox-image" alt="" class="max-h-full max-w-full object-contain" />
+    </div>
+
+    <div class="flex items-center justify-center gap-4 px-4 pb-8">
+      <button
+        type="button"
+        id="lightbox-prev"
+        class="rounded-full border border-cream/30 px-6 py-2.5 text-cream transition-colors hover:bg-cream hover:text-ink"
+      >
+        Föregående
+      </button>
+      <button
+        type="button"
+        id="lightbox-next"
+        class="rounded-full border border-cream/30 px-6 py-2.5 text-cream transition-colors hover:bg-cream hover:text-ink"
+      >
+        Nästa
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement | null;
+  const image = document.getElementById('lightbox-image') as HTMLImageElement | null;
+  const counter = document.getElementById('lightbox-counter');
+  const triggers = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('[data-lightbox]'),
+  );
+
+  if (dialog && image && counter && triggers.length > 0) {
+    const photos = triggers.map((trigger) => ({
+      src: trigger.dataset.full ?? '',
+      alt: trigger.dataset.alt ?? '',
+    }));
+
+    let current = 0;
+    let opener: HTMLButtonElement | null = null;
+
+    const show = (index: number) => {
+      current = (index + photos.length) % photos.length;
+      const photo = photos[current];
+      image.src = photo.src;
+      image.alt = photo.alt;
+      counter.textContent = `${current + 1} / ${photos.length}`;
+    };
+
+    for (const trigger of triggers) {
+      trigger.addEventListener('click', () => {
+        opener = trigger;
+        show(Number(trigger.dataset.index ?? 0));
+        dialog.showModal();
+      });
+    }
+
+    document.getElementById('lightbox-prev')?.addEventListener('click', () => show(current - 1));
+    document.getElementById('lightbox-next')?.addEventListener('click', () => show(current + 1));
+    document.getElementById('lightbox-close')?.addEventListener('click', () => dialog.close());
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(current + 1);
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        show(current - 1);
+      }
+    });
+
+    // Clicking the backdrop (i.e. the dialog element itself) closes it.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener('close', () => {
+      opener?.focus();
+      opener = null;
+    });
+  }
+</script>

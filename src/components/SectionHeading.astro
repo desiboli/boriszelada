@@ -1,0 +1,72 @@
+---
+interface Props {
+  /** Small all-caps kicker above the heading. */
+  eyebrow?: string;
+  /** Handwritten aside, sits to the side of the eyebrow. */
+  script?: string;
+  title: string;
+  align?: 'left' | 'center';
+  tone?: 'dark' | 'light';
+  class?: string;
+}
+
+const {
+  eyebrow,
+  script,
+  title,
+  align = 'left',
+  tone = 'dark',
+  class: className = '',
+} = Astro.props;
+
+const isCentered = align === 'center';
+---
+
+<div
+  class:list={[
+    'reveal flex flex-col gap-3',
+    isCentered && 'items-center text-center',
+    className,
+  ]}
+>
+  {
+    (eyebrow || script) && (
+      <div
+        class:list={[
+          'flex flex-wrap items-baseline gap-x-4 gap-y-1',
+          isCentered && 'justify-center',
+        ]}
+      >
+        {script && (
+          <span
+            class:list={[
+              'script text-3xl sm:text-4xl -rotate-2',
+              tone === 'dark' ? 'text-clay' : 'text-gold',
+            ]}
+          >
+            {script}
+          </span>
+        )}
+        {eyebrow && (
+          <span
+            class:list={[
+              'eyebrow',
+              tone === 'dark' ? 'text-ink/55' : 'text-cream/60',
+            ]}
+          >
+            {eyebrow}
+          </span>
+        )}
+      </div>
+    )
+  }
+
+  <h2
+    class:list={[
+      'text-display',
+      tone === 'dark' ? 'text-ink' : 'text-cream',
+      isCentered ? 'max-w-4xl' : 'max-w-3xl',
+    ]}
+    set:html={title}
+  />
+</div>

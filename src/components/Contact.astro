@@ -1,0 +1,242 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { formEndpoint, isFormConfigured, site } from '../data/site';
+import { packages } from '../data/packages';
+
+const fieldClass =
+  'w-full rounded-xl border border-ink/15 bg-cream px-4 py-3 text-ink transition-colors placeholder:text-ink/35 focus:border-clay focus:outline-none';
+const labelClass = 'eyebrow block text-ink/55';
+---
+
+<section id="kontakt" class="bg-blush py-24 sm:py-32">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8">
+    <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5">
+        <SectionHeading
+          eyebrow="Vill ni veta mer?"
+          script="Toppen!"
+          title="Då är det dags att höras"
+        />
+
+        <p class="reveal mt-6 text-lead text-ink/75">
+          Berätta lite om er dag — datum, plats och vad ni tänkt er. Jag svarar alltid
+          personligen, och en första konsultation kostar ingenting.
+        </p>
+
+        <dl class="reveal mt-12 flex flex-col gap-6 border-t border-ink/15 pt-8">
+          <div>
+            <dt class={labelClass}>E-post</dt>
+            <dd class="mt-1">
+              <a
+                href={`mailto:${site.email}`}
+                class="font-display text-2xl text-ink underline decoration-clay decoration-2 underline-offset-4 transition-colors hover:text-clay"
+              >
+                {site.email}
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt class={labelClass}>Instagram</dt>
+            <dd class="mt-1">
+              <a
+                href={site.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-display text-2xl text-ink underline decoration-clay decoration-2 underline-offset-4 transition-colors hover:text-clay"
+              >
+                {site.instagramHandle}
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="reveal lg:col-span-7">
+        <form
+          id="contact-form"
+          class="rounded-[1.75rem] bg-cream/70 p-7 backdrop-blur-sm sm:p-10"
+          action={isFormConfigured ? formEndpoint : undefined}
+          method="POST"
+          data-endpoint={isFormConfigured ? formEndpoint : ''}
+          data-mailto={site.email}
+        >
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class={labelClass} for="names">Ni två *</label>
+              <input
+                class={`${fieldClass} mt-2`}
+                id="names"
+                name="Brudpar"
+                type="text"
+                required
+                autocomplete="name"
+                placeholder="Era namn"
+              />
+            </div>
+
+            <div>
+              <label class={labelClass} for="email">E-post *</label>
+              <input
+                class={`${fieldClass} mt-2`}
+                id="email"
+                name="E-post"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="namn@exempel.se"
+              />
+            </div>
+
+            <div>
+              <label class={labelClass} for="phone">Telefon</label>
+              <input
+                class={`${fieldClass} mt-2`}
+                id="phone"
+                name="Telefon"
+                type="tel"
+                autocomplete="tel"
+                placeholder="070 123 45 67"
+              />
+            </div>
+
+            <div>
+              <label class={labelClass} for="date">Bröllopsdatum *</label>
+              <input class={`${fieldClass} mt-2`} id="date" name="Datum" type="date" required />
+            </div>
+
+            <div>
+              <label class={labelClass} for="location">Plats</label>
+              <input
+                class={`${fieldClass} mt-2`}
+                id="location"
+                name="Plats"
+                type="text"
+                placeholder="Ort eller lokal"
+              />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class={labelClass} for="package">Vilket paket är ni intresserade av?</label>
+              <select class={`${fieldClass} mt-2`} id="package" name="Paket">
+                <option value="Vet inte än">Vet inte än — hjälp oss välja</option>
+                {
+                  packages.map((pkg) => (
+                    <option value={`${pkg.name} (${pkg.price})`}>
+                      {pkg.name} — {pkg.price}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class={labelClass} for="message">Berätta om er dag</label>
+              <textarea
+                class={`${fieldClass} mt-2 min-h-36 resize-y`}
+                id="message"
+                name="Meddelande"
+                rows="5"
+                placeholder="Hur många gäster, vad är viktigast för er, och finns det något särskilt ni vill ha fångat?"></textarea>
+            </div>
+          </div>
+
+          <!-- Honeypot: bots fill this in, humans never see it. -->
+          <input type="text" name="_gotcha" tabindex="-1" class="hidden" aria-hidden="true" />
+          <input type="hidden" name="_subject" value="Ny bröllopsförfrågan via boriszelada.com" />
+
+          <button
+            type="submit"
+            class="mt-8 w-full rounded-full bg-ink px-8 py-4 text-cream transition-colors duration-300 hover:bg-clay disabled:opacity-60"
+          >
+            Skicka förfrågan
+          </button>
+
+          <p class="mt-4 text-sm text-ink/55">
+            Ibland hamnar mina svar i skräpposten — lämna gärna ett telefonnummer så
+            hör jag av mig där också.
+          </p>
+
+          <p
+            id="form-status"
+            role="status"
+            aria-live="polite"
+            class="mt-4 hidden rounded-xl px-4 py-3 text-sm"
+          >
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const status = document.getElementById('form-status');
+
+  if (form && status) {
+    const endpoint = form.dataset.endpoint;
+
+    const setStatus = (message: string, ok: boolean) => {
+      status.textContent = message;
+      status.classList.remove('hidden', 'bg-sage/20', 'bg-clay/15', 'text-ink');
+      status.classList.add(ok ? 'bg-sage/20' : 'bg-clay/15', 'text-ink');
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      // Until a Formspree endpoint is configured, hand the enquiry off to the
+      // visitor's mail client with everything they typed pre-filled.
+      if (!endpoint) {
+        const data = new FormData(form);
+        const body = Array.from(data.entries())
+          .filter(([key]) => !key.startsWith('_'))
+          .map(([key, value]) => `${key}: ${value}`)
+          .join('\n');
+
+        const subject = encodeURIComponent('Bröllopsförfrågan via boriszelada.com');
+        const mailto = form.dataset.mailto ?? '';
+        window.location.href = `mailto:${mailto}?subject=${subject}&body=${encodeURIComponent(body)}`;
+
+        setStatus(
+          'Ert e-postprogram öppnas med förfrågan ifylld — tryck skicka där.',
+          true,
+        );
+        return;
+      }
+
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const original = button?.textContent ?? 'Skicka förfrågan';
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Skickar…';
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+
+        if (!response.ok) throw new Error(String(response.status));
+
+        form.reset();
+        setStatus(
+          'Tack! Er förfrågan är skickad. Jag hör av mig så snart jag kan.',
+          true,
+        );
+      } catch {
+        setStatus(
+          'Något gick fel. Maila mig gärna direkt på boris_zelada@live.se i stället.',
+          false,
+        );
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = original;
+        }
+      }
+    });
+  }
+</script>

@@ -1,0 +1,140 @@
+---
+import { nav, site } from '../data/site';
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 transition-colors duration-500 data-[stuck]:bg-cream/90 data-[stuck]:shadow-[0_1px_0_rgba(34,27,25,0.08)] data-[stuck]:backdrop-blur-md"
+>
+  <div class="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-5 py-4 sm:px-8">
+    <a
+      href="#top"
+      class="flex flex-col leading-none text-cream transition-colors duration-500"
+      id="wordmark"
+    >
+      <span class="font-display text-xl tracking-tight sm:text-2xl">{site.name}</span>
+      <span class="eyebrow mt-1 text-[0.625rem] opacity-70">{site.role}</span>
+    </a>
+
+    <nav aria-label="Huvudmeny" class="hidden items-center gap-7 lg:flex">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class="nav-link relative text-cream/90 transition-colors hover:text-cream"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href="#kontakt"
+        class="rounded-full bg-clay px-5 py-2 text-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-ink"
+      >
+        Boka datum
+      </a>
+    </nav>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      class="nav-link flex items-center gap-2 text-cream lg:hidden"
+    >
+      <span class="eyebrow text-xs" id="menu-label">Meny</span>
+      <span class="flex h-3.5 w-6 flex-col justify-between" aria-hidden="true">
+        <span class="block h-px w-full bg-current"></span>
+        <span class="block h-px w-full bg-current"></span>
+        <span class="block h-px w-full bg-current"></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div
+    id="mobile-menu"
+    hidden
+    class="border-t border-ink/10 bg-cream px-5 pb-8 pt-4 lg:hidden"
+  >
+    <nav aria-label="Meny" class="flex flex-col">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class="mobile-link border-b border-ink/10 py-3 font-display text-2xl text-ink"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href="#kontakt"
+        class="mobile-link mt-6 rounded-full bg-clay px-6 py-3 text-center text-cream"
+      >
+        Boka datum
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const wordmark = document.getElementById('wordmark')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const menuLabel = document.getElementById('menu-label')!;
+  const navLinks = document.querySelectorAll<HTMLElement>('.nav-link');
+
+  // Links sit on top of the hero photo, so they start light and flip to dark
+  // once the header has a solid background behind it.
+  const setStuck = (stuck: boolean) => {
+    if (stuck) header.setAttribute('data-stuck', '');
+    else header.removeAttribute('data-stuck');
+
+    wordmark.classList.toggle('text-cream', !stuck);
+    wordmark.classList.toggle('text-ink', stuck);
+
+    for (const link of navLinks) {
+      link.classList.toggle('text-cream/90', !stuck);
+      link.classList.toggle('text-cream', !stuck && link === toggle);
+      link.classList.toggle('text-ink', stuck);
+    }
+  };
+
+  const sentinel = document.getElementById('top');
+  if (sentinel) {
+    new IntersectionObserver(([entry]) => setStuck(!entry.isIntersecting), {
+      rootMargin: '-90% 0px 0px 0px',
+    }).observe(sentinel);
+  }
+
+  const closeMenu = () => {
+    menu.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    menuLabel.textContent = 'Meny';
+  };
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    if (open) {
+      closeMenu();
+    } else {
+      menu.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      menuLabel.textContent = 'Stäng';
+      setStuck(true);
+    }
+  });
+
+  for (const link of document.querySelectorAll('.mobile-link')) {
+    link.addEventListener('click', closeMenu);
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !menu.hidden) {
+      closeMenu();
+      toggle.focus();
+    }
+  });
+</script>
