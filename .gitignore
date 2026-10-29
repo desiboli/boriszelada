@@ -6,6 +6,10 @@ dist/
 
 # dependencies
 node_modules/
+.pnpm-store/
+
+# local Cursor state
+.cursor/hooks/state/
 
 # logs
 npm-debug.log*

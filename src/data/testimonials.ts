@@ -9,7 +9,7 @@
  * `SHOW_TESTIMONIALS` to false — the section will be skipped on the page.
  * ========================================================================== */
 
-export const SHOW_TESTIMONIALS = true;
+export const SHOW_TESTIMONIALS = false;
 
 export type Testimonial = {
   quote: string;

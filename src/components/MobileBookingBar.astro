@@ -1,0 +1,48 @@
+---
+import { site } from '../data/site';
+---
+
+<!-- Mobile only. Hidden while the hero's own button is on screen and from the
+     contact section onward, so it never covers the form or the footer. -->
+<div
+  id="booking-bar"
+  inert
+  class="pointer-events-none fixed inset-x-0 bottom-0 z-40 translate-y-full px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 opacity-0 transition-[translate,opacity] duration-300 ease-out-soft data-[visible]:pointer-events-auto data-[visible]:translate-y-0 data-[visible]:opacity-100 lg:hidden"
+>
+  <a
+    href="#kontakt"
+    class="block rounded-full bg-clay px-6 py-3.5 text-center text-cream shadow-[0_12px_30px_-10px_rgba(34,27,25,0.45)] transition-colors duration-300 active:bg-ink"
+  >
+    {site.bookingLabel}
+  </a>
+</div>
+
+<script>
+  const bar = document.getElementById('booking-bar');
+  const heroButton = document.querySelector('#top a[href="#kontakt"]');
+  const contact = document.getElementById('kontakt');
+
+  if (bar && heroButton && contact) {
+    let pastHero = false;
+    let atContact = false;
+
+    const update = () => {
+      const visible = pastHero && !atContact;
+      bar.toggleAttribute('data-visible', visible);
+      bar.inert = !visible;
+    };
+
+    // Appear as soon as the hero's own booking button has scrolled away.
+    new IntersectionObserver(([entry]) => {
+      pastHero = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      update();
+    }).observe(heroButton);
+
+    // "At contact" stays true once the section's top has scrolled into view,
+    // which also covers the footer below it.
+    new IntersectionObserver(([entry]) => {
+      atContact = entry.isIntersecting || entry.boundingClientRect.top < 0;
+      update();
+    }).observe(contact);
+  }
+</script>

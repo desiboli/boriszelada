@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site } from '../data/site';
+
+const updated = '29 oktober 2026';
+
+const headingClass = 'mt-14 text-title text-ink';
+const listClass = 'mt-4 flex flex-col gap-2 list-disc pl-5 text-ink/80 marker:text-clay';
+const linkClass =
+  'underline decoration-clay decoration-2 underline-offset-4 transition-colors hover:text-clay';
+---
+
+<Layout
+  title={`Integritetspolicy — ${site.name}`}
+  description={`Så hanterar ${site.name} de personuppgifter ni skickar via kontaktformuläret.`}
+>
+  <SiteHeader solid />
+
+  <main id="main" class="bg-cream pb-24 pt-36 sm:pb-32 sm:pt-44">
+    <article class="mx-auto max-w-3xl px-5 sm:px-8">
+      <p class="eyebrow text-ink/70">Senast uppdaterad {updated}</p>
+      <h1 class="mt-4 text-display text-ink">Integritetspolicy</h1>
+
+      <div class="prose-body mt-8 text-lead text-ink/80">
+        <p>
+          När ni skickar en förfrågan via formuläret på den här sidan delar ni personuppgifter
+          med mig. Här förklarar jag vilka uppgifter det är, vad jag använder dem till och vilka
+          rättigheter ni har.
+        </p>
+      </div>
+
+      <h2 class={headingClass}>Vem ansvarar för uppgifterna?</h2>
+      <p class="mt-4 text-ink/80">
+        {site.name} är personuppgiftsansvarig. Frågor om hur era uppgifter hanteras skickar ni
+        till <a href={`mailto:${site.email}`} class={linkClass}>{site.email}</a>.
+      </p>
+
+      <h2 class={headingClass}>Vilka uppgifter samlas in?</h2>
+      <p class="mt-4 text-ink/80">Det ni själva fyller i formuläret:</p>
+      <ul class={listClass}>
+        <li>era namn och er e-postadress</li>
+        <li>telefonnummer, om ni väljer att lämna det</li>
+        <li>bröllopsdatum, plats och vilket paket ni är intresserade av</li>
+        <li>det ni skriver i meddelandet</li>
+      </ul>
+
+      <h2 class={headingClass}>Varför och med vilken rätt?</h2>
+      <p class="mt-4 text-ink/80">
+        Jag använder uppgifterna för att svara på er förfrågan, ge er en offert och planera
+        fotograferingen om ni bokar mig. Den rättsliga grunden är att behandlingen behövs för att
+        vidta åtgärder som ni själva har begärt innan ett avtal ingås, och sedan för att fullgöra
+        avtalet (artikel 6.1 b i dataskyddsförordningen). Uppgifterna används inte för
+        marknadsföring och säljs aldrig vidare.
+      </p>
+
+      <h2 class={headingClass}>Var lagras uppgifterna?</h2>
+      <p class="mt-4 text-ink/80">
+        Formuläret tas emot av Netlify, som driftar webbplatsen, och skickas sedan vidare till min
+        e-post. Netlify är ett företag i USA. Överföringen dit sker med stöd av EU-kommissionens
+        standardavtalsklausuler, som ska ge samma skydd som inom EU.
+      </p>
+
+      <h2 class={headingClass}>Hur länge sparas de?</h2>
+      <p class="mt-4 text-ink/80">
+        Leder förfrågan inte till en bokning raderar jag uppgifterna senast tolv månader efter
+        vår sista kontakt. Bokar ni mig sparas de så länge uppdraget pågår. Uppgifter som ingår i
+        bokföringen, till exempel fakturor, sparar jag i sju år eftersom bokföringslagen kräver
+        det.
+      </p>
+
+      <h2 class={headingClass}>Era rättigheter</h2>
+      <p class="mt-4 text-ink/80">Ni har rätt att:</p>
+      <ul class={listClass}>
+        <li>få veta vilka uppgifter jag har om er och få en kopia av dem</li>
+        <li>få felaktiga uppgifter rättade</li>
+        <li>få uppgifterna raderade, om de inte måste sparas enligt lag</li>
+        <li>begränsa eller invända mot hur uppgifterna används</li>
+      </ul>
+      <p class="mt-4 text-ink/80">
+        Mejla mig på <a href={`mailto:${site.email}`} class={linkClass}>{site.email}</a> så hjälper
+        jag er. Tycker ni att jag hanterar era uppgifter fel kan ni också vända er till
+        <a href="https://www.imy.se" target="_blank" rel="noopener noreferrer" class={linkClass}
+          >Integritetsskyddsmyndigheten (IMY)</a
+        >.
+      </p>
+
+      <h2 class={headingClass}>Cookies</h2>
+      <p class="mt-4 text-ink/80">
+        Webbplatsen använder inga cookies och ingen spårning eller besöksstatistik.
+      </p>
+
+      <a
+        href="/"
+        class="mt-16 inline-block rounded-full bg-ink px-7 py-3.5 text-cream transition-colors duration-300 hover:bg-clay"
+      >
+        Tillbaka till startsidan
+      </a>
+    </article>
+  </main>
+
+  <SiteFooter />
+</Layout>

@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site } from '../data/site';
+---
+
+<Layout
+  title={`Sidan finns inte — ${site.name}`}
+  description="Sidan du letade efter finns inte."
+  noindex
+>
+  <SiteHeader solid />
+
+  <main id="main" class="bg-cream pb-24 pt-36 sm:pb-32 sm:pt-44">
+    <div class="mx-auto max-w-3xl px-5 sm:px-8">
+      <p class="script w-fit -rotate-2 text-3xl text-clay sm:text-4xl">Hoppsan!</p>
+      <h1 class="mt-4 text-display text-ink">Den här sidan finns inte</h1>
+
+      <p class="mt-8 text-lead text-ink/75">
+        Länken kan vara gammal eller felstavad. Bilderna, paketen och kontaktformuläret
+        finns på startsidan.
+      </p>
+
+      <div class="mt-12 flex flex-wrap items-center gap-3">
+        <a
+          href="/"
+          class="rounded-full bg-ink px-7 py-3.5 text-cream transition-colors duration-300 hover:bg-clay"
+        >
+          Till startsidan
+        </a>
+        <a
+          href="/#kontakt"
+          class="rounded-full border border-ink/20 px-7 py-3.5 text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-cream"
+        >
+          {site.bookingLabel}
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Layout>

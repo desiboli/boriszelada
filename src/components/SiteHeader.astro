@@ -1,16 +1,28 @@
 ---
 import { nav, site } from '../data/site';
+
+interface Props {
+  /** Start with the light background, for pages without a hero photo. */
+  solid?: boolean;
+}
+
+const { solid = false } = Astro.props;
+
+// Links sit on top of the hero photo, so they start light and flip to dark
+// (with a clay hover) once the header has a solid background behind it.
+const linkClass =
+  'text-cream/90 underline decoration-transparent decoration-1 underline-offset-[6px] transition-colors duration-300 hover:text-cream hover:decoration-current group-data-[stuck]:text-ink group-data-[stuck]:hover:text-clay';
 ---
 
 <header
   id="site-header"
-  class="fixed inset-x-0 top-0 z-50 transition-colors duration-500 data-[stuck]:bg-cream/90 data-[stuck]:shadow-[0_1px_0_rgba(34,27,25,0.08)] data-[stuck]:backdrop-blur-md"
+  data-stuck={solid ? '' : undefined}
+  class="group fixed inset-x-0 top-0 z-50 transition-colors duration-500 data-[stuck]:bg-cream/90 data-[stuck]:shadow-[0_1px_0_rgba(34,27,25,0.08)] data-[stuck]:backdrop-blur-md"
 >
   <div class="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-5 py-4 sm:px-8">
     <a
-      href="#top"
-      class="flex flex-col leading-none text-cream transition-colors duration-500"
-      id="wordmark"
+      href="/#top"
+      class="flex flex-col leading-none text-cream transition-colors duration-500 group-data-[stuck]:text-ink"
     >
       <span class="font-display text-xl tracking-tight sm:text-2xl">{site.name}</span>
       <span class="eyebrow mt-1 text-[0.625rem] opacity-70">{site.role}</span>
@@ -19,19 +31,16 @@ import { nav, site } from '../data/site';
     <nav aria-label="Huvudmeny" class="hidden items-center gap-7 lg:flex">
       {
         nav.map((item) => (
-          <a
-            href={item.href}
-            class="nav-link relative text-cream/90 transition-colors hover:text-cream"
-          >
+          <a href={item.href} class={linkClass}>
             {item.label}
           </a>
         ))
       }
       <a
-        href="#kontakt"
-        class="rounded-full bg-clay px-5 py-2 text-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-ink"
+        href="/#kontakt"
+        class="whitespace-nowrap rounded-full bg-clay px-5 py-2 text-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-ink"
       >
-        Boka datum
+        {site.bookingLabel}
       </a>
     </nav>
 
@@ -40,7 +49,7 @@ import { nav, site } from '../data/site';
       id="menu-toggle"
       aria-expanded="false"
       aria-controls="mobile-menu"
-      class="nav-link flex items-center gap-2 text-cream lg:hidden"
+      class="-mx-2 -my-3.5 flex items-center gap-2 px-2 py-3.5 text-cream transition-colors duration-300 group-data-[stuck]:text-ink lg:hidden"
     >
       <span class="eyebrow text-xs" id="menu-label">Meny</span>
       <span class="flex h-3.5 w-6 flex-col justify-between" aria-hidden="true">
@@ -69,10 +78,10 @@ import { nav, site } from '../data/site';
         ))
       }
       <a
-        href="#kontakt"
+        href="/#kontakt"
         class="mobile-link mt-6 rounded-full bg-clay px-6 py-3 text-center text-cream"
       >
-        Boka datum
+        {site.bookingLabel}
       </a>
     </nav>
   </div>
@@ -80,39 +89,35 @@ import { nav, site } from '../data/site';
 
 <script>
   const header = document.getElementById('site-header')!;
-  const wordmark = document.getElementById('wordmark')!;
   const toggle = document.getElementById('menu-toggle')!;
   const menu = document.getElementById('mobile-menu')!;
   const menuLabel = document.getElementById('menu-label')!;
-  const navLinks = document.querySelectorAll<HTMLElement>('.nav-link');
 
-  // Links sit on top of the hero photo, so they start light and flip to dark
-  // once the header has a solid background behind it.
   const setStuck = (stuck: boolean) => {
     if (stuck) header.setAttribute('data-stuck', '');
     else header.removeAttribute('data-stuck');
-
-    wordmark.classList.toggle('text-cream', !stuck);
-    wordmark.classList.toggle('text-ink', stuck);
-
-    for (const link of navLinks) {
-      link.classList.toggle('text-cream/90', !stuck);
-      link.classList.toggle('text-cream', !stuck && link === toggle);
-      link.classList.toggle('text-ink', stuck);
-    }
   };
 
+  // Pages without a hero photo have no sentinel and stay solid throughout.
   const sentinel = document.getElementById('top');
+  let overHero = sentinel !== null;
+
   if (sentinel) {
-    new IntersectionObserver(([entry]) => setStuck(!entry.isIntersecting), {
-      rootMargin: '-90% 0px 0px 0px',
-    }).observe(sentinel);
+    new IntersectionObserver(
+      ([entry]) => {
+        overHero = entry.isIntersecting;
+        // The open menu needs the solid background regardless of position.
+        if (menu.hidden) setStuck(!overHero);
+      },
+      { rootMargin: '-90% 0px 0px 0px' },
+    ).observe(sentinel);
   }
 
   const closeMenu = () => {
     menu.hidden = true;
     toggle.setAttribute('aria-expanded', 'false');
     menuLabel.textContent = 'Meny';
+    setStuck(!overHero);
   };
 
   toggle.addEventListener('click', () => {

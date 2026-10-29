@@ -1,17 +1,19 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import heroImage from '../assets/photos/brudpar-saden.jpg';
 import { site } from '../data/site';
 ---
 
 <section id="top" class="relative min-h-[100svh] overflow-hidden bg-plum">
-  <Image
+  <Picture
     src={heroImage}
     alt="Brudpar i mörk uniform och vit klänning står tätt tillsammans i ett grönt sädesfält."
-    widths={[640, 1024, 1600, 2200]}
+    formats={['avif', 'webp']}
+    widths={[640, 960, 1280, 1600]}
     sizes="100vw"
     loading="eager"
     fetchpriority="high"
+    pictureAttributes={{ class: 'contents' }}
     class="absolute inset-0 h-full w-full object-cover object-[50%_35%]"
   />
 
@@ -28,7 +30,9 @@ import { site } from '../data/site';
     class="relative mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-end px-5 pb-16 pt-32 sm:px-8 sm:pb-20"
   >
     <p class="eyebrow reveal is-visible text-cream/75">
-      {site.role} · {site.yearsExperience}+ år · Hela Sverige
+      <span class="whitespace-nowrap">{site.role} ·</span>{' '}
+      <span class="whitespace-nowrap">{site.yearsExperience}+ år ·</span>{' '}
+      <span class="whitespace-nowrap">Hela Sverige</span>
     </p>
 
     <h1 class="reveal is-visible mt-6 text-cream">
@@ -38,23 +42,23 @@ import { site } from '../data/site';
     </h1>
 
     <div
-      class="reveal is-visible mt-10 flex flex-col gap-8 border-t border-cream/20 pt-8 md:flex-row md:items-end md:justify-between"
+      class="reveal is-visible mt-10 flex flex-col gap-8 border-t border-cream/20 pt-8 lg:flex-row lg:items-end lg:justify-between"
     >
       <p class="max-w-xl text-lead text-cream/85">
         Tidlösa och känslofyllda bilder från er största dag — av en fotograf som
         lägger lika mycket tid på er som på bilderna.
       </p>
 
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex shrink-0 flex-wrap items-center gap-3">
         <a
           href="#kontakt"
-          class="rounded-full bg-cream px-7 py-3.5 text-ink transition-transform duration-300 hover:-translate-y-0.5 hover:bg-blush"
+          class="whitespace-nowrap rounded-full bg-cream px-7 py-3.5 text-ink transition-transform duration-300 hover:-translate-y-0.5 hover:bg-blush"
         >
-          Boka kostnadsfri konsultation
+          {site.bookingLabel}
         </a>
         <a
           href="#galleri"
-          class="rounded-full border border-cream/35 px-7 py-3.5 text-cream transition-colors duration-300 hover:border-cream hover:bg-cream/10"
+          class="whitespace-nowrap rounded-full border border-cream/35 px-7 py-3.5 text-cream transition-colors duration-300 hover:border-cream hover:bg-cream/10"
         >
           Se bilderna
         </a>

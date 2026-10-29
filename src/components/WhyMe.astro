@@ -1,7 +1,8 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import joy from '../assets/photos/skratt-i-bilen.jpg';
 import SectionHeading from './SectionHeading.astro';
+import { site } from '../data/site';
 
 const reasons = [
   {
@@ -48,11 +49,13 @@ const reasons = [
       </ol>
 
       <div class="reveal lg:col-span-5">
-        <Image
+        <Picture
           src={joy}
           alt="Bruden och två anhöriga skrattar tillsammans i baksätet på bröllopsbilen."
+          formats={['avif', 'webp']}
           widths={[520, 900, 1300]}
-          sizes="(min-width: 1024px) 38vw, 90vw"
+          sizes="(min-width: 1400px) 520px, (min-width: 1024px) 35vw, 90vw"
+          pictureAttributes={{ class: 'contents' }}
           loading="lazy"
           class="w-full rounded-[1.75rem] object-cover"
         />
@@ -64,7 +67,7 @@ const reasons = [
           href="#kontakt"
           class="mt-8 inline-block rounded-full bg-cream px-7 py-3.5 text-forest transition-colors duration-300 hover:bg-gold"
         >
-          Ta med mig på er bröllopsdag
+          {site.bookingLabel}
         </a>
       </div>
     </div>

@@ -18,27 +18,42 @@ dev server detached (`astro dev stop` / `status` / `logs` to manage it).
 
 ## Before going live
 
-Three things are placeholders and need real content:
+Two sections are hidden until they have real content. Each one drops out of the menu
+too while hidden:
 
-1. **Testimonials** — `src/data/testimonials.ts`. The five quotes are invented filler with
-   `PLACEHOLDER & PLACEHOLDER` bylines so they're obvious on the page. Replace with real
-   quotes, or set `SHOW_TESTIMONIALS = false` to hide the whole section.
+1. **Testimonials** — `src/data/testimonials.ts`. The five quotes are invented filler.
+   Replace them with real quotes, then set `SHOW_TESTIMONIALS = true`.
 2. **Tips / guides** — `src/data/tips.ts`. Four suggested article topics with placeholder
-   summaries. Give a card an `href` and it becomes clickable; set `SHOW_TIPS = false` to
-   hide the section.
-3. **Contact form** — `src/data/site.ts`, `formspreeId`. Create a free form at
-   [formspree.io](https://formspree.io) and paste the ID from the endpoint it gives you
-   (`https://formspree.io/f/XXXXXXXX`).
+   summaries. Give a card an `href` and it becomes clickable; set `SHOW_TIPS = true` once
+   the articles exist.
 
-   Until that's set, the form still works: on submit it opens the visitor's mail client
-   with every field pre-filled and addressed to `boris_zelada@live.se`. That's a weaker
-   experience than a real form, so configuring Formspree is worth doing.
+## Contact form (Netlify Forms)
+
+The contact form submits to [Netlify Forms](https://docs.netlify.com/manage/forms/setup/),
+so it only works on the deployed Netlify site and its deploy previews. Submitting on
+`localhost` shows a notice that nothing was sent, which is expected.
+
+One-time setup in the Netlify dashboard:
+
+1. **Forms → Enable form detection**, then redeploy. A form called `kontakt` should appear.
+2. **Forms → Form notifications → Email notification** to `boris_zelada@live.se`.
+3. Send a test from the live site. If no email arrives, check the form's **Spam** list
+   in Netlify before assuming it failed.
+
+The privacy policy at `/integritetspolicy` (`src/pages/integritetspolicy.astro`) describes
+this setup: Netlify receives the form, nothing is used for marketing, enquiries without a
+booking are deleted within 12 months, and the site sets no cookies. Update it if any of
+that changes, e.g. if analytics are added, and bump the "Senast uppdaterad" date.
+
+If the form is renamed, change both `name` on the `<form>` and the hidden `form-name`
+field in `src/components/Contact.astro`.
 
 ## Where the content lives
 
 | What | File |
 | --- | --- |
-| Name, role, email, Instagram, SEO description, form ID | `src/data/site.ts` |
+| Name, role, email, Instagram, SEO description | `src/data/site.ts` |
+| Booking button label (used on every "book" button) | `src/data/site.ts`, `bookingLabel` |
 | Nav links (anchor targets) | `src/data/site.ts` |
 | Package names, prices, what's included | `src/data/packages.ts` |
 | Which photos appear in the gallery, and their alt text | `src/data/gallery.ts` |
@@ -84,8 +99,8 @@ Sections alternate light and dark bands. If you add a section, keep that rhythm 
 
 ## Deploying
 
-The build output is static, so any static host works. Recommended: Cloudflare Pages,
-Netlify, or Vercel.
+The site is deployed to Netlify. The build output is static, but the contact form relies
+on Netlify Forms, so moving to another host means replacing the form backend too.
 
 - **Build command:** `pnpm build`
 - **Output directory:** `dist`

@@ -1,15 +1,17 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import backdrop from '../assets/photos/brudpar-kyssen.jpg';
 ---
 
 <section class="relative overflow-hidden bg-plum py-28 sm:py-40">
-  <Image
+  <Picture
     src={backdrop}
     alt=""
     aria-hidden="true"
-    widths={[900, 1400, 2000]}
+    formats={['avif', 'webp']}
+    widths={[900, 1400, 1600]}
     sizes="100vw"
+    pictureAttributes={{ class: 'contents' }}
     loading="lazy"
     class="absolute inset-0 h-full w-full object-cover object-[50%_30%] opacity-30"
   />

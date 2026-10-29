@@ -8,7 +8,7 @@
  * clickable. To hide the section until then, set `SHOW_TIPS` to false.
  * ========================================================================== */
 
-export const SHOW_TIPS = true;
+export const SHOW_TIPS = false;
 
 export type Tip = {
   title: string;

@@ -1,3 +1,6 @@
+import { SHOW_TESTIMONIALS } from './testimonials';
+import { SHOW_TIPS } from './tips';
+
 export const site = {
   name: 'Boris Zelada',
   role: 'Bröllopsfotograf',
@@ -8,26 +11,19 @@ export const site = {
   instagramHandle: '@boriszeladafoto',
   instagramUrl: 'https://instagram.com/boriszeladafoto',
   yearsExperience: 10,
-
-  /**
-   * ⚠️ REPLACE ME — Formspree form ID for the contact form.
-   *
-   * Create a free form at https://formspree.io, then paste the ID from the
-   * endpoint it gives you (https://formspree.io/f/XXXXXXXX) here.
-   * Until this is replaced the form falls back to opening the visitor's mail
-   * client instead of submitting.
-   */
-  formspreeId: 'REPLACE_WITH_FORMSPREE_ID',
+  /** The one label every "book me" button uses, so visitors see a single next step. */
+  bookingLabel: 'Boka kostnadsfri konsultation',
 } as const;
 
-export const isFormConfigured = !site.formspreeId.startsWith('REPLACE_WITH');
-export const formEndpoint = `https://formspree.io/f/${site.formspreeId}`;
-
+// Optional sections drop out of the menu when hidden so no link points at a
+// missing anchor. Links are root-relative so they also work from subpages.
 export const nav = [
-  { label: 'Om mig', href: '#om' },
-  { label: 'Galleri', href: '#galleri' },
-  { label: 'Paket', href: '#paket' },
-  { label: 'Omdömen', href: '#omdomen' },
-  { label: 'Tips', href: '#tips' },
-  { label: 'Kontakt', href: '#kontakt' },
-] as const;
+  { label: 'Om mig', href: '/#om', show: true },
+  { label: 'Galleri', href: '/#galleri', show: true },
+  { label: 'Paket', href: '/#paket', show: true },
+  { label: 'Omdömen', href: '/#omdomen', show: SHOW_TESTIMONIALS },
+  { label: 'Tips', href: '/#tips', show: SHOW_TIPS },
+  { label: 'Kontakt', href: '/#kontakt', show: true },
+]
+  .filter((item) => item.show)
+  .map(({ label, href }) => ({ label, href }));

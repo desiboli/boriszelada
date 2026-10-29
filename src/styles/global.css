@@ -14,8 +14,10 @@
   --color-ink: #221b19;
   --color-plum: #2e1f27;
   --color-forest: #3b4a3c;
-  --color-clay: #be5f4a;
-  --color-gold: #c99a4f;
+  /* Clay and gold are tuned to clear 4.5:1 as text: clay on cream/shell,
+     gold on forest/plum. */
+  --color-clay: #a44d3a;
+  --color-gold: #d9b170;
   --color-sage: #8a9b7e;
 
   --font-display: var(--ff-display);
@@ -66,6 +68,11 @@
     font-family: var(--font-display);
     font-weight: 400;
     text-wrap: balance;
+  }
+
+  /* Keep the page behind the lightbox from scrolling. */
+  html:has(dialog[open]) {
+    overflow: hidden;
   }
 
   ::selection {

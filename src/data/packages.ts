@@ -12,6 +12,10 @@ export type Package = {
   featured?: boolean;
 };
 
+/** Value used in the contact form's package dropdown, and by the package
+ *  cards to pre-select it. */
+export const packageOptionValue = (pkg: Package) => `${pkg.name} (${pkg.price})`;
+
 export const packages: Package[] = [
   {
     number: '01',

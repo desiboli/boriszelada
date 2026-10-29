@@ -1,11 +1,12 @@
 ---
 import SectionHeading from './SectionHeading.astro';
-import { formEndpoint, isFormConfigured, site } from '../data/site';
-import { packages } from '../data/packages';
+import { site } from '../data/site';
+import { packageOptionValue, packages } from '../data/packages';
 
 const fieldClass =
-  'w-full rounded-xl border border-ink/15 bg-cream px-4 py-3 text-ink transition-colors placeholder:text-ink/35 focus:border-clay focus:outline-none';
-const labelClass = 'eyebrow block text-ink/55';
+  'w-full rounded-xl border border-ink/15 bg-cream px-4 py-3 text-ink transition-colors placeholder:text-ink/65 focus:border-clay aria-[invalid=true]:border-clay aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-clay';
+const labelClass = 'eyebrow block text-ink/70';
+const errorClass = 'mt-2 text-sm font-semibold text-clay';
 ---
 
 <section id="kontakt" class="bg-blush py-24 sm:py-32">
@@ -52,17 +53,26 @@ const labelClass = 'eyebrow block text-ink/55';
       </div>
 
       <div class="reveal lg:col-span-7">
+        <!-- Netlify detects this form in the built HTML at deploy time; the
+             name must match the hidden form-name field. -->
         <form
           id="contact-form"
-          class="rounded-[1.75rem] bg-cream/70 p-7 backdrop-blur-sm sm:p-10"
-          action={isFormConfigured ? formEndpoint : undefined}
+          name="kontakt"
           method="POST"
-          data-endpoint={isFormConfigured ? formEndpoint : ''}
-          data-mailto={site.email}
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          data-email={site.email}
+          class="rounded-[1.75rem] bg-cream/70 p-7 backdrop-blur-sm sm:p-10"
         >
+          <input type="hidden" name="form-name" value="kontakt" />
+
+          <p class="mb-6 text-sm text-ink/70">
+            Fält markerade med <span aria-hidden="true">*</span> måste fyllas i.
+          </p>
+
           <div class="grid gap-5 sm:grid-cols-2">
             <div class="sm:col-span-2">
-              <label class={labelClass} for="names">Ni två *</label>
+              <label class={labelClass} for="names">Ni två <span aria-hidden="true">*</span></label>
               <input
                 class={`${fieldClass} mt-2`}
                 id="names"
@@ -72,10 +82,11 @@ const labelClass = 'eyebrow block text-ink/55';
                 autocomplete="name"
                 placeholder="Era namn"
               />
+              <p id="names-error" class={errorClass} hidden></p>
             </div>
 
             <div>
-              <label class={labelClass} for="email">E-post *</label>
+              <label class={labelClass} for="email">E-post <span aria-hidden="true">*</span></label>
               <input
                 class={`${fieldClass} mt-2`}
                 id="email"
@@ -85,6 +96,7 @@ const labelClass = 'eyebrow block text-ink/55';
                 autocomplete="email"
                 placeholder="namn@exempel.se"
               />
+              <p id="email-error" class={errorClass} hidden></p>
             </div>
 
             <div>
@@ -100,8 +112,9 @@ const labelClass = 'eyebrow block text-ink/55';
             </div>
 
             <div>
-              <label class={labelClass} for="date">Bröllopsdatum *</label>
+              <label class={labelClass} for="date">Bröllopsdatum <span aria-hidden="true">*</span></label>
               <input class={`${fieldClass} mt-2`} id="date" name="Datum" type="date" required />
+              <p id="date-error" class={errorClass} hidden></p>
             </div>
 
             <div>
@@ -121,7 +134,7 @@ const labelClass = 'eyebrow block text-ink/55';
                 <option value="Vet inte än">Vet inte än — hjälp oss välja</option>
                 {
                   packages.map((pkg) => (
-                    <option value={`${pkg.name} (${pkg.price})`}>
+                    <option value={packageOptionValue(pkg)}>
                       {pkg.name} — {pkg.price}
                     </option>
                   ))
@@ -141,8 +154,8 @@ const labelClass = 'eyebrow block text-ink/55';
           </div>
 
           <!-- Honeypot: bots fill this in, humans never see it. -->
-          <input type="text" name="_gotcha" tabindex="-1" class="hidden" aria-hidden="true" />
-          <input type="hidden" name="_subject" value="Ny bröllopsförfrågan via boriszelada.com" />
+          <input type="text" name="bot-field" tabindex="-1" class="hidden" aria-hidden="true" />
+          <input type="hidden" name="subject" value="Ny bröllopsförfrågan via boriszelada.com" />
 
           <button
             type="submit"
@@ -151,9 +164,19 @@ const labelClass = 'eyebrow block text-ink/55';
             Skicka förfrågan
           </button>
 
-          <p class="mt-4 text-sm text-ink/55">
+          <p class="mt-4 text-sm text-ink/70">
             Ibland hamnar mina svar i skräpposten — lämna gärna ett telefonnummer så
             hör jag av mig där också.
+          </p>
+
+          <p class="mt-3 text-sm text-ink/70">
+            Uppgifterna används bara för att svara på er förfrågan. Läs mer i min
+            <a
+              href="/integritetspolicy"
+              class="underline decoration-clay underline-offset-2 transition-colors hover:text-clay"
+            >
+              integritetspolicy</a
+            >.
           </p>
 
           <p
@@ -174,33 +197,94 @@ const labelClass = 'eyebrow block text-ink/55';
   const status = document.getElementById('form-status');
 
   if (form && status) {
-    const endpoint = form.dataset.endpoint;
-
     const setStatus = (message: string, ok: boolean) => {
       status.textContent = message;
       status.classList.remove('hidden', 'bg-sage/20', 'bg-clay/15', 'text-ink');
       status.classList.add(ok ? 'bg-sage/20' : 'bg-clay/15', 'text-ink');
     };
 
+    // "Fråga om …" on a package card pre-selects that package in the form.
+    const packageSelect = document.getElementById('package') as HTMLSelectElement | null;
+    for (const link of document.querySelectorAll<HTMLElement>('[data-package]')) {
+      link.addEventListener('click', () => {
+        if (packageSelect && link.dataset.package) packageSelect.value = link.dataset.package;
+      });
+    }
+
+    // Replace the browser's validation bubbles with messages under each field.
+    // Without JS the native validation still applies.
+    form.noValidate = true;
+
+    // Catches a mistyped year. Uses the visitor's local date, not UTC.
+    const dateField = document.getElementById('date') as HTMLInputElement | null;
+    if (dateField) {
+      const now = new Date();
+      dateField.min = new Date(now.getTime() - now.getTimezoneOffset() * 60_000)
+        .toISOString()
+        .slice(0, 10);
+    }
+
+    const messages: Record<string, (field: HTMLInputElement) => string> = {
+      names: () => 'Skriv era namn.',
+      email: (field) =>
+        field.validity.valueMissing
+          ? 'Skriv er e-postadress.'
+          : 'Det ser inte ut som en e-postadress — kolla gärna stavningen.',
+      date: (field) =>
+        field.validity.rangeUnderflow
+          ? 'Det datumet har redan varit — kolla gärna året.'
+          : 'Välj ert bröllopsdatum. Ett ungefärligt datum går bra.',
+    };
+
+    const fields = Object.keys(messages)
+      .map((id) => document.getElementById(id))
+      .filter((field): field is HTMLInputElement => field instanceof HTMLInputElement);
+
+    const validate = (field: HTMLInputElement) => {
+      const error = document.getElementById(`${field.id}-error`);
+      if (!error) return true;
+
+      const valid = field.checkValidity();
+      if (valid) {
+        field.removeAttribute('aria-invalid');
+        field.removeAttribute('aria-describedby');
+        error.hidden = true;
+        error.textContent = '';
+      } else {
+        field.setAttribute('aria-invalid', 'true');
+        field.setAttribute('aria-describedby', error.id);
+        error.textContent = messages[field.id](field);
+        error.hidden = false;
+      }
+      return valid;
+    };
+
+    for (const field of fields) {
+      // Only complain on blur once something has been typed, so tabbing
+      // through an empty form doesn't light it up with errors.
+      field.addEventListener('blur', () => {
+        if (field.value !== '' || field.hasAttribute('aria-invalid')) validate(field);
+      });
+      field.addEventListener('input', () => {
+        if (field.hasAttribute('aria-invalid')) validate(field);
+      });
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      // Until a Formspree endpoint is configured, hand the enquiry off to the
-      // visitor's mail client with everything they typed pre-filled.
-      if (!endpoint) {
-        const data = new FormData(form);
-        const body = Array.from(data.entries())
-          .filter(([key]) => !key.startsWith('_'))
-          .map(([key, value]) => `${key}: ${value}`)
-          .join('\n');
+      const invalid = fields.filter((field) => !validate(field));
+      if (invalid.length > 0) {
+        invalid[0].focus();
+        return;
+      }
 
-        const subject = encodeURIComponent('Bröllopsförfrågan via boriszelada.com');
-        const mailto = form.dataset.mailto ?? '';
-        window.location.href = `mailto:${mailto}?subject=${subject}&body=${encodeURIComponent(body)}`;
-
+      // The Astro dev server answers any POST with the page itself, which
+      // would look like a successful submission. Only Netlify can receive it.
+      if (import.meta.env.DEV) {
         setStatus(
-          'Ert e-postprogram öppnas med förfrågan ifylld — tryck skicka där.',
-          true,
+          'Utvecklingsläge: formuläret skickas bara på Netlify-sajten. Inget har skickats.',
+          false,
         );
         return;
       }
@@ -213,10 +297,14 @@ const labelClass = 'eyebrow block text-ink/55';
       }
 
       try {
-        const response = await fetch(endpoint, {
+        // Netlify only accepts URL-encoded bodies for form submissions.
+        const body = new URLSearchParams(
+          Array.from(new FormData(form), ([key, value]) => [key, String(value)]),
+        );
+        const response = await fetch('/', {
           method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' },
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString(),
         });
 
         if (!response.ok) throw new Error(String(response.status));
@@ -228,7 +316,7 @@ const labelClass = 'eyebrow block text-ink/55';
         );
       } catch {
         setStatus(
-          'Något gick fel. Maila mig gärna direkt på boris_zelada@live.se i stället.',
+          `Något gick fel. Maila mig gärna direkt på ${form.dataset.email} i stället.`,
           false,
         );
       } finally {

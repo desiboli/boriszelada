@@ -6,23 +6,25 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  /** Keep the page out of search results, e.g. the 404 page. */
+  noindex?: boolean;
 }
 
-const { title = site.title, description = site.description } = Astro.props;
+const { title = site.title, description = site.description, noindex = false } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.jpg', Astro.site);
+const home = new URL('/', Astro.site);
 
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  additionalType: 'https://schema.org/Photograph',
   name: site.name,
   description: site.description,
-  url: canonical.href,
+  url: home.href,
   image: ogImage.href,
   email: site.email,
-  jobTitle: site.role,
+  founder: { '@type': 'Person', name: site.name, jobTitle: site.role },
   areaServed: { '@type': 'Country', name: 'Sverige' },
   sameAs: [site.instagramUrl],
   priceRange: '7000–18000 SEK',
@@ -35,7 +37,8 @@ const structuredData = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={canonical.href} />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical.href} />}
 
     <title>{title}</title>
     <meta name="description" content={description} />

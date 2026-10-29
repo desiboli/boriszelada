@@ -1,6 +1,6 @@
 ---
 import SectionHeading from './SectionHeading.astro';
-import { packages } from '../data/packages';
+import { packageOptionValue, packages } from '../data/packages';
 ---
 
 <section id="paket" class="bg-cream py-24 sm:py-32">
@@ -38,7 +38,7 @@ import { packages } from '../data/packages';
               <span
                 class:list={[
                   'eyebrow',
-                  pkg.featured ? 'text-cream/50' : 'text-ink/40',
+                  pkg.featured ? 'text-cream/60' : 'text-ink/65',
                 ]}
               >
                 {pkg.number}
@@ -78,6 +78,7 @@ import { packages } from '../data/packages';
 
             <a
               href="#kontakt"
+              data-package={packageOptionValue(pkg)}
               class:list={[
                 'mt-10 rounded-full px-6 py-3 text-center transition-colors duration-300',
                 pkg.featured
@@ -85,14 +86,14 @@ import { packages } from '../data/packages';
                   : 'bg-ink text-cream hover:bg-clay',
               ]}
             >
-              Fråga om {pkg.name.toLowerCase()}
+              Fråga om {pkg.name}
             </a>
           </article>
         ))
       }
     </div>
 
-    <p class="reveal mt-10 text-sm text-ink/55">
+    <p class="reveal mt-10 text-sm text-ink/65">
       Alla paket inkluderar genomgång före bröllopet och professionell efterredigering.
       Res­kostnad utanför närområdet tillkommer.
     </p>
