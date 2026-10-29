@@ -75,6 +75,21 @@
     overflow: hidden;
   }
 
+  /* iOS Safari gives native date inputs an intrinsic min-width that ignores
+     `width: 100%`, pushing them out of narrow containers. Dropping the native
+     appearance removes it, but also collapses the empty field's height and
+     centres the value, so both are restored to match the text inputs. */
+  input[type='date'] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 0;
+    min-height: 3.375rem;
+  }
+
+  input[type='date']::-webkit-date-and-time-value {
+    text-align: left;
+  }
+
   ::selection {
     background-color: var(--color-clay);
     color: var(--color-cream);
