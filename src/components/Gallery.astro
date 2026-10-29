@@ -68,10 +68,10 @@ const fullSize = await Promise.all(
 
 <dialog
   id="lightbox"
-  class="max-h-none max-w-none bg-transparent backdrop:bg-plum/92 backdrop:backdrop-blur-sm"
+  class="h-dvh max-h-none w-full max-w-none bg-plum/92 backdrop:bg-transparent backdrop:backdrop-blur-sm"
   aria-label="Bildvisning"
 >
-  <div class="fixed inset-0 flex flex-col" data-lightbox-dismiss>
+  <div class="flex h-full flex-col" data-lightbox-dismiss>
     <div class="flex items-center justify-between px-4 py-4 sm:px-8" data-lightbox-dismiss>
       <p class="eyebrow text-cream/60" id="lightbox-counter"></p>
       <button
@@ -140,13 +140,17 @@ const fullSize = await Promise.all(
       return loader;
     };
 
+    let shown: HTMLImageElement = image;
+
     // Keep the old photo hidden until the new one has decoded, so stepping
     // through never flashes the previous picture under the new counter.
+    // Each photo gets a fresh <img>: iOS Safari leaves stale pixels behind
+    // when a single element shrinks to a shorter photo.
     const show = (index: number) => {
       current = wrap(index);
       const photo = photos[current];
       counter.textContent = `${current + 1} / ${photos.length}`;
-      image.setAttribute('data-loading', '');
+      shown.setAttribute('data-loading', '');
 
       const requested = current;
       preload(photo.src)
@@ -154,9 +158,14 @@ const fullSize = await Promise.all(
         .catch(() => {})
         .then(() => {
           if (requested !== current) return;
-          image.src = photo.src;
-          image.alt = photo.alt;
-          image.removeAttribute('data-loading');
+          const next = shown.cloneNode() as HTMLImageElement;
+          next.src = photo.src;
+          next.alt = photo.alt;
+          shown.replaceWith(next);
+          shown = next;
+          // Flush styles so the fade-in transition runs from opacity 0.
+          void next.offsetWidth;
+          next.removeAttribute('data-loading');
         });
 
       preload(photos[wrap(current + 1)].src);
