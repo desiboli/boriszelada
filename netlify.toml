@@ -1,0 +1,10 @@
+# Static Astro site. The contact form is Netlify Forms (see src/components/Contact.astro);
+# it is detected from the built HTML, so this stays a static publish with no adapter.
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 7 requires Node 22.12+. Pin pnpm to the version that produced pnpm-lock.yaml.
+  NODE_VERSION = "22"
+  PNPM_VERSION = "11.22.0"
