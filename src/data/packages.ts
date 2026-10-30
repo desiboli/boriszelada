@@ -1,7 +1,6 @@
 /**
- * Real pricing, carried over verbatim from boriszelada.com.
- * `summary` is the original wording; `includes` is the same content split into
- * a list so it can be laid out as a card.
+ * Wedding packages shown on the site and in the contact form.
+ * `summary` is the same content as `includes`, written as one sentence.
  */
 export type Package = {
   number: string;
@@ -20,46 +19,56 @@ export const packages: Package[] = [
   {
     number: '01',
     name: 'Lilla',
-    price: '7 000 SEK',
+    price: '8 000 SEK',
     summary:
-      'Porträtt av brudparet, vigsel, brudfölje och familj samt gratulationer/mingel i samband med vigseln.',
+      'Fotografering av vigseln, porträttfotografering av brudparet, familje- och gruppbilder, 200–250 redigerade bilder, digitalt onlinegalleri och högupplösta bilder för nedladdning.',
     includes: [
-      'Porträtt av brudparet',
-      'Vigsel',
-      'Brudfölje och familj',
-      'Gratulationer och mingel i samband med vigseln',
+      'Fotografering av vigseln',
+      'Porträttfotografering av brudparet',
+      'Familje- och gruppbilder',
+      '200–250 redigerade bilder',
+      'Digitalt onlinegalleri',
+      'Högupplösta bilder för nedladdning',
     ],
   },
   {
     number: '02',
     name: 'Mellan',
-    price: '13 000 SEK',
+    price: '14 000 SEK',
     summary:
-      'Porträtt av brudparet, vigsel, brudfölje och familj, gratulationer/mingel i samband med vigsel samt middag med tal.',
+      'Förberedelser hos brudparet, first look om önskat, vigsel och gratulationer, porträttfotografering, familje- och gruppbilder, mingel och detaljer från bröllopet, 400–500 redigerade bilder, digitalt onlinegalleri och sneak peek inom 48 timmar.',
     includes: [
-      'Porträtt av brudparet',
-      'Vigsel',
-      'Brudfölje och familj',
-      'Gratulationer och mingel i samband med vigseln',
-      'Middag med tal',
+      'Förberedelser hos brudparet',
+      'First look (om önskat)',
+      'Vigsel och gratulationer',
+      'Porträttfotografering',
+      'Familje- och gruppbilder',
+      'Mingel och detaljer från bröllopet',
+      '400–500 redigerade bilder',
+      'Digitalt onlinegalleri',
+      'Sneak peek inom 48 timmar',
     ],
     featured: true,
   },
   {
     number: '03',
     name: 'Stora',
-    price: '18 000 SEK',
+    price: '19 000 SEK',
     summary:
-      'Porträtt av brudparet, vigsel, brudfölje och familj, gratulationer/mingel i samband med vigsel, middag med tal samt efterföljande fest, skärning av tårtan och första dansen.',
+      'Förberedelser och påklädning, first look, porträttfotografering, vigsel och gratulationer, familje- och gruppbilder, mingel och bröllopsmiddag, tal och fest, brudvals och dans, 800–900 redigerade bilder, sneak peek inom 48 timmar, prioriterad leverans och personligt onlinegalleri.',
     includes: [
-      'Porträtt av brudparet',
-      'Vigsel',
-      'Brudfölje och familj',
-      'Gratulationer och mingel i samband med vigseln',
-      'Middag med tal',
-      'Efterföljande fest',
-      'Skärning av tårtan',
-      'Första dansen',
+      'Förberedelser och påklädning',
+      'First look',
+      'Porträttfotografering',
+      'Vigsel och gratulationer',
+      'Familje- och gruppbilder',
+      'Mingel och bröllopsmiddag',
+      'Tal och fest',
+      'Brudvals och dans',
+      '800–900 redigerade bilder',
+      'Sneak peek inom 48 timmar',
+      'Prioriterad leverans',
+      'Personligt onlinegalleri',
     ],
   },
 ];
