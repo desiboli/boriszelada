@@ -130,7 +130,11 @@ const errorClass = 'mt-2 text-sm font-semibold text-clay';
 
             <div class="sm:col-span-2">
               <label class={labelClass} for="package">Vilket paket är ni intresserade av?</label>
-              <select class={`${fieldClass} mt-2`} id="package" name="Paket">
+              <select
+                class={`${fieldClass} mt-2 appearance-none bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2020%2020'%20fill='none'%20stroke='%232b2622'%20stroke-width='1.75'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='m5%208%205%205%205-5'/%3E%3C/svg%3E")] bg-[length:1.25rem] bg-[position:right_1rem_center] bg-no-repeat pr-12`}
+                id="package"
+                name="Paket"
+              >
                 <option value="Vet inte än">Vet inte än — hjälp oss välja</option>
                 {
                   packages.map((pkg) => (
@@ -170,7 +174,7 @@ const errorClass = 'mt-2 text-sm font-semibold text-clay';
           </p>
 
           <p class="mt-3 text-sm text-ink/70">
-            Uppgifterna används bara för att svara på er förfrågan. Läs mer i min
+            Uppgifterna används bara för att svara på er förfrågan. Läs mer i min{" "}
             <a
               href="/integritetspolicy"
               class="underline decoration-clay underline-offset-2 transition-colors hover:text-clay"
